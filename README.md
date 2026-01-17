@@ -1,12 +1,20 @@
-# Python / AI
-In this repo we're pretend helping the small business to know how the client is perceiving their porposal.
+# Python / AI Business Assistant
 
-	•	Project purpose
-	•	Business problem
-	•	Core features
-	•	Tech stack
-	•	How to run the app
+## Overview
+This project is an AI-powered business intelligence application for small businesses.
 
+It provides:
+- Sales forecasting
+- Customer sentiment analysis
+- Data-driven insights for decision-making
+
+## Target Users
+- Small business owners
+- Shop managers
+- Restaurant owners
+
+## Core Value
+Help businesses move from intuition-based decisions to data-driven decisions.	
 
 
 Intial Stack:
