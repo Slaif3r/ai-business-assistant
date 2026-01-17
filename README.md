@@ -1,6 +1,14 @@
 # Python / AI
 In this repo we're pretend helping the small business to know how the client is perceiving their porposal.
 
+	•	Project purpose
+	•	Business problem
+	•	Core features
+	•	Tech stack
+	•	How to run the app
+
+
+
 Intial Stack:
 
 | Purpose|Tool|
