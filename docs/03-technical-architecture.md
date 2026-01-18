@@ -13,7 +13,8 @@
 - UI layer
 - Infrastructure layer
 
-- | Business Need | Technical Component |
+## Business Structure
+| Business Need | Technical Component |
 |--------------|--------------------|
 | Upload sales data | CSV parser (Pandas) |
 | Clean data | Data preprocessing |
