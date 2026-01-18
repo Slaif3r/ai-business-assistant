@@ -1,5 +1,4 @@
-# Functional Requirements
-
+# AI Product Basics
 | ID | Functionality | Description | Business Value | Priority |
 |----|---------------|------------|----------------|----------|
 | F1 | Sales data upload | Upload CSV sales data | Enables AI processing | High |
