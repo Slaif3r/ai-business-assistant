@@ -1,4 +1,15 @@
-# Python / AI Business Assistant
+# AI Business Assistant
+
+## License
+This project is licensed under the MIT License.
+
+## Notice
+This repository is intended for educational and demonstrative purposes.
+Commercial usage of the deployed service and business logic may require
+explicit permission from the author.
+Aristides A. Morcillo .T
+
+
 
 ## Overview
 This project is an AI-powered business intelligence application for small businesses.
