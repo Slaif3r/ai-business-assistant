@@ -1,4 +1,27 @@
 # AI Product Basics
+
+## What Is an AI Product?
+An AI product is a system that uses data and machine learning models to generate predictions or insights and improves over time.
+
+## Why This Is an AI Product
+- Uses historical business data
+- Learns patterns from data
+- Produces probabilistic outputs
+- Can be retrained with new data
+
+## AI vs Traditional Software
+| Traditional Software | AI Product |
+|---------------------|-----------|
+| Rule-based | Data-driven |
+| Deterministic | Probabilistic |
+| Static | Evolves with data |
+
+## Roles Involved
+- Product Owner
+- Data Engineer
+- ML Engineer
+- Software Engineer
+
 | ID | Functionality | Description | Business Value | Priority |
 |----|---------------|------------|----------------|----------|
 | F1 | Sales data upload | Upload CSV sales data | Enables AI processing | High |
