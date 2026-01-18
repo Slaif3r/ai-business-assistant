@@ -11,3 +11,5 @@ Small businesses struggle to predict future sales and understand customer feedba
 ## Target Users
 - Small business owners
 - Managers
+
+## Core Value
