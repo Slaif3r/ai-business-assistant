@@ -1,15 +1,23 @@
-# Business Context
+# Business Overview
 
 ## Problem Statement
-Small businesses struggle to predict future sales and understand customer feedback.
-
-## Goals
-- Forecast sales accurately
-- Detect customer dissatisfaction early
-- Support better operational decisions
+Small and medium businesses struggle to understand and predict their business performance using their own data.
 
 ## Target Users
 - Small business owners
-- Managers
+- Managers without technical background
 
-## Core Value
+## Proposed Solution
+AI Business Assistant is a Python-based AI application that analyzes business data and provides forecasts and insights through an easy-to-use interface.
+
+## Value Proposition
+- Better decision-making
+- Reduced uncertainty
+- Data-driven insights without technical knowledge
+
+## Business Priorities
+| Priority | Description |
+|--------|------------|
+| High | Accurate predictions |
+| High | Easy data upload |
+| Medium | Explainable insights |
