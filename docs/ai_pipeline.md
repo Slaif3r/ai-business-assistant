@@ -1,9 +1,30 @@
-# AI Pipeline (End-to-End)
+# AI Pipeline
 
-1. Data ingestion (CSV upload)
-2. Data cleaning
-3. Feature engineering
-4. Model training
+## Overview
+This document describes the end-to-end flow of data inside the AI Business Assistant.
+
+## Pipeline Steps
+
+1. Data Ingestion
+   - Upload CSV files
+   - Validate structure
+
+2. Data Cleaning
+   - Handle missing values
+   - Normalize formats
+
+3. Feature Engineering
+   - Extract time-based features
+   - Aggregate metrics
+
+4. Model Training
+   - Train regression or forecasting model
+
 5. Prediction
-6. UI results
-7. Feedback mechanism
+   - Generate future forecasts
+
+6. User Output
+   - Display results in UI
+
+7. Feedback Loop
+   - Improve model with new data
