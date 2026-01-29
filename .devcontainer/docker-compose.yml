@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  ai-business-assistant:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+      args:
+        UID: "20001"
+        UNAME: "builduser"
+        PASS: "dev24"
+        GROUP_GID: "10001"
+        UGNAME: "buildgroup"
+
+    # Customize container name here ⬇️
+    container_name: ${CONTAINER_NAME:-ai-business-assistant-dev}
+    # Customize hostname here ⬇️
+    hostname: ${HOSTNAME:-ai-business-assistant}
+
+    # Keep container running
+    command: sleep infinity
+
+    # Mount workspace
+    volumes:
+      - ..:/home/builduser/APP:cached
+      - ~/.ssh:/home/builduser/.ssh:ro
+      - ~/.gitconfig:/home/builduser/.gitconfig:ro
+
+    # Port forwarding
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+      - "8888:8888"
+
+    # Environment variables
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+
+    # User configuration
+    user: builduser
+
+    # Working directory
+    working_dir: /home/builduser/APP
+
+    # Network configuration
+    networks:
+      - dev-network
+
+networks:
+  dev-network:
+    driver: bridge

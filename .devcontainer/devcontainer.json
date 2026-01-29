@@ -1,0 +1,167 @@
+{
+  "name": "AI Business Assistant - Antigravity Dev",
+  // OPTION 1: Build from Dockerfile (default)
+  "build": {
+    "dockerfile": "../docker/Dockerfile.dev",
+    "context": "..",
+    "args": {
+      "UID": "20001",
+      "UNAME": "builduser",
+      "PASS": "dev24",
+      "GROUP_GID": "10001",
+      "UGNAME": "buildgroup"
+    }
+  },
+  // OPTION 2: Attach to existing container (comment out 'build' above and uncomment below)
+  // To use: 
+  // 1. Start container: docker run -d --name ai-business-assistant-dev -v "${PWD}:/home/builduser/APP" -p 8000:8000 -p 8888:8888 <your-image-name> sleep infinity
+  // 2. In VS Code: "Dev Containers: Attach to Running Container" and select "ai-business-assistant-dev"
+  // "image": "ai-business-assistant:latest",
+  // Configure container user
+  "remoteUser": "builduser",
+  "containerUser": "builduser",
+  "updateRemoteUserUID": false,
+  // Mount the workspace
+  "workspaceFolder": "/home/builduser/APP",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/builduser/APP,type=bind,consistency=cached",
+  // Features to install
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true,
+      "username": "builduser"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest",
+      "ppa": false
+    }
+  },
+  // VS Code customizations for Antigravity
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Python support
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        // Jupyter notebooks
+        "ms-toolsai.jupyter",
+        "ms-toolsai.jupyter-keymap",
+        "ms-toolsai.jupyter-renderers",
+        // Git and version control
+        "eamodio.gitlens",
+        // Code formatting and linting
+        "ms-python.black-formatter",
+        "ms-python.flake8",
+        "ms-python.isort",
+        // Markdown support
+        "yzhang.markdown-all-in-one",
+        "DavidAnson.vscode-markdownlint",
+        // General productivity
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "usernamehw.errorlens",
+        "oderwat.indent-rainbow",
+        "PKief.material-icon-theme"
+      ],
+      "settings": {
+        // Python settings
+        "python.defaultInterpreterPath": "/usr/bin/python3",
+        "python.terminal.activateEnvironment": true,
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": true,
+        "python.formatting.provider": "black",
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+          }
+        },
+        // Jupyter settings
+        "jupyter.askForKernelRestart": false,
+        "jupyter.widgetScriptSources": [
+          "jsdelivr.com",
+          "unpkg.com"
+        ],
+        // Editor settings
+        "editor.formatOnSave": true,
+        "editor.rulers": [
+          88,
+          120
+        ],
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.wordWrap": "on",
+        "editor.minimap.enabled": true,
+        "editor.suggestSelection": "first",
+        "editor.bracketPairColorization.enabled": true,
+        // Terminal settings
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash",
+            "icon": "terminal-bash"
+          },
+          "zsh": {
+            "path": "/bin/zsh",
+            "icon": "terminal"
+          }
+        },
+        // Files settings
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/.pytest_cache": true,
+          "**/*.pyc": true,
+          "**/.DS_Store": true
+        },
+        "files.watcherExclude": {
+          "**/.git/objects/**": true,
+          "**/.git/subtree-cache/**": true,
+          "**/node_modules/**": true,
+          "**/__pycache__/**": true
+        },
+        // Git settings
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "git.enableSmartCommit": true,
+        // Markdown settings
+        "[markdown]": {
+          "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+          "editor.wordWrap": "on"
+        }
+      }
+    }
+  },
+  // Port forwarding
+  "forwardPorts": [
+    8000, // Common Python web server port
+    8080, // Alternative web server port
+    8888, // Jupyter notebook default port
+    5000 // Flask default port
+  ],
+  // Post-create command to set up the environment
+  "postCreateCommand": "bash -c 'pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
+  // Mount additional volumes if needed
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/builduser/.ssh,type=bind,consistency=cached,readonly",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/builduser/.gitconfig,type=bind,consistency=cached,readonly"
+  ],
+  // Environment variables
+  "remoteEnv": {
+    "PYTHONUNBUFFERED": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  // Run arguments for the container
+  // Customize container name and hostname here ⬇️
+  "runArgs": [
+    "--name=ai-business-assistant-dev",
+    "--hostname=ai-business-assistant"
+  ],
+  // Lifecycle scripts
+  "initializeCommand": "echo 'Initializing devcontainer...'",
+  "onCreateCommand": "echo 'Container created successfully!'",
+  "updateContentCommand": "echo 'Updating container content...'",
+  "postStartCommand": "git config --global --add safe.directory /home/builduser/APP"
+}
