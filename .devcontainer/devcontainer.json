@@ -6,11 +6,11 @@
     "dockerfile": "../docker/Dockerfile.dev",
     "context": "..",
     "args": {
-      // ✅ Alineado al usuario típico del host para evitar permisos raros en mounts
+      // ✅ Align to common host/Codespaces user UID/GID to avoid permission issues on mounts
       "UID": "1000",
       "GROUP_GID": "1000",
 
-      // ✅ Tu usuario “real” dentro del contenedor
+      // ✅ Your intended user inside the container
       "UNAME": "builduser",
       "UGNAME": "buildgroup",
 
@@ -21,10 +21,12 @@
   // OPTION 2: Attach to existing container (leave for later)
   // "image": "ai-business-assistant:latest",
 
-  // ✅ Fuerza el usuario de VS Code dentro del contenedor
+  // ✅ Force VS Code to use your user
   "remoteUser": "builduser",
   "containerUser": "builduser",
-  "updateRemoteUserUID": false,
+
+  // ✅ Let Dev Containers align UID if needed (helps in Codespaces scenarios)
+  "updateRemoteUserUID": true,
 
   // Workspace
   "workspaceFolder": "/home/builduser/APP",
@@ -33,7 +35,7 @@
   // Features
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      // ✅ IMPORTANTÍSIMO: si no alineas esto, puedes terminar como "vscode"
+      // ✅ Ensure feature setup targets your user (prevents falling back to vscode)
       "username": "builduser",
       "userUid": "1000",
       "userGid": "1000",
@@ -84,6 +86,7 @@
             "source.organizeImports": "explicit"
           }
         },
+
         "jupyter.askForKernelRestart": false,
         "jupyter.widgetScriptSources": ["jsdelivr.com", "unpkg.com"],
 
@@ -144,11 +147,10 @@
     "PYTHONDONTWRITEBYTECODE": "1"
   },
 
-  // ✅ Refuerza ejecución con UID/GID 1000:1000 (por si Docker/Feature intenta otra cosa)
+  // ✅ IMPORTANT: do NOT force --user here (it can cause vscode fallback / mismatch)
   "runArgs": [
     "--name=ai-business-assistant-dev",
-    "--hostname=ai-business-assistant",
-    "--user=1000:1000"
+    "--hostname=ai-business-assistant"
   ],
 
   "initializeCommand": "echo 'Initializing devcontainer...'",
