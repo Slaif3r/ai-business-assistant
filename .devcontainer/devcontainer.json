@@ -1,45 +1,29 @@
 {
   "name": "AI Business Assistant - Antigravity Dev",
 
-  // OPTION 1: Build from Dockerfile (default)
   "build": {
     "dockerfile": "../docker/Dockerfile.dev",
     "context": "..",
     "args": {
-      // ✅ Align to common host/Codespaces user UID/GID to avoid permission issues on mounts
       "UID": "1000",
       "GROUP_GID": "1000",
-
-      // ✅ Your intended user inside the container
       "UNAME": "builduser",
-      "UGNAME": "buildgroup",
-
-      "PASS": "dev24"
+      "UGNAME": "buildgroup"
     }
   },
 
-  // OPTION 2: Attach to existing container (leave for later)
-  // "image": "ai-business-assistant:latest",
-
-  // ✅ Force VS Code to use your user
   "remoteUser": "builduser",
   "containerUser": "builduser",
-
-  // ✅ Let Dev Containers align UID if needed (helps in Codespaces scenarios)
   "updateRemoteUserUID": true,
 
-  // Workspace
   "workspaceFolder": "/home/builduser/APP",
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/builduser/APP,type=bind,consistency=cached",
 
-  // Features
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      // ✅ Ensure feature setup targets your user (prevents falling back to vscode)
       "username": "builduser",
       "userUid": "1000",
       "userGid": "1000",
-
       "installZsh": true,
       "installOhMyZsh": true,
       "upgradePackages": true,
@@ -51,7 +35,6 @@
     }
   },
 
-  // VS Code customizations
   "customizations": {
     "vscode": {
       "extensions": [
@@ -130,13 +113,10 @@
     }
   },
 
-  // Ports
   "forwardPorts": [8000, 8080, 8888, 5000],
 
-  // Post-create
-  "postCreateCommand": "bash -c 'pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
+  "postCreateCommand": "bash -c 'python -m pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
 
-  // Mount extra files
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/builduser/.ssh,type=bind,consistency=cached,readonly",
     "source=${localEnv:HOME}/.gitconfig,target=/home/builduser/.gitconfig,type=bind,consistency=cached,readonly"
@@ -147,7 +127,6 @@
     "PYTHONDONTWRITEBYTECODE": "1"
   },
 
-  // ✅ IMPORTANT: do NOT force --user here (it can cause vscode fallback / mismatch)
   "runArgs": [
     "--name=ai-business-assistant-dev",
     "--hostname=ai-business-assistant"
