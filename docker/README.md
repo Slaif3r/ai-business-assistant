@@ -9,7 +9,7 @@ Development environment Dockerfile used by:
 - `.devcontainer/devcontainer.json` (VS Code/Antigravity dev containers)
 - `.devcontainer/docker-compose.yml` (standalone Docker Compose)
 
-**Base Image:** `arm64v8/debian:latest`
+**Base Image:** `FROM python:3.11-slim-bookworm`
 
 **Includes:**
 - Node.js 22.x

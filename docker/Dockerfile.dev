@@ -1,5 +1,5 @@
 # Use Debian Slim as the base image for smaller footprint
-FROM arm64v8/debian:bookworm-slim
+FROM FROM python:3.11-slim-bookworm
 
 # Set environment variables to avoid interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
