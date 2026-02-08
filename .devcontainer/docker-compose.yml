@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   ai-business-assistant:
@@ -6,10 +6,12 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.dev
       args:
-        UID: "20001"
+        # ✅ Align UID/GID with most Linux/macOS dev hosts to avoid mount permission issues
+        UID: "1000"
+        GROUP_GID: "1000"
+
+        # ✅ Your intended user/group inside the container
         UNAME: "builduser"
-        PASS: "dev24"
-        GROUP_GID: "10001"
         UGNAME: "buildgroup"
 
     # Customize container name here ⬇️
@@ -20,11 +22,11 @@ services:
     # Keep container running
     command: sleep infinity
 
-    # Mount workspace
+    # Mount workspace + optional host credentials (readonly)
     volumes:
       - ..:/home/builduser/APP:cached
-      - ~/.ssh:/home/builduser/.ssh:ro
-      - ~/.gitconfig:/home/builduser/.gitconfig:ro
+      - ${HOME}/.ssh:/home/builduser/.ssh:ro
+      - ${HOME}/.gitconfig:/home/builduser/.gitconfig:ro
 
     # Port forwarding
     ports:
@@ -34,11 +36,11 @@ services:
 
     # Environment variables
     environment:
-      - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
+      PYTHONUNBUFFERED: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
 
-    # User configuration
-    user: builduser
+    # ✅ Most reliable user mapping for bind mounts
+    user: "1000:1000"
 
     # Working directory
     working_dir: /home/builduser/APP
