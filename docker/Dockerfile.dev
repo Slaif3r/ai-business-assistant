@@ -1,85 +1,64 @@
-# Use Debian Slim as the base image for smaller footprint
 FROM python:3.11-slim-bookworm
 
-# Set environment variables to avoid interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Define build-time arguments with default values
 ARG UID=20001
 ARG UNAME=builduser
-ARG PASS=dev24
 ARG GROUP_GID=10001
 ARG UGNAME=buildgroup
 
-# Consolidated installation layer - install everything needed, then clean up
 RUN apt-get update && \
-    # Install essential runtime packages
     apt-get install -y --no-install-recommends \
-    sudo \
-    curl \
-    ca-certificates \
-    git \
-    procps \
-    # Build dependencies (will be removed later for some)
-    build-essential \
-    # Python and dependencies
-    python3 \
-    python3-venv \
-    python3-pip \
-    python3-dev \
-    # Python library dependencies (runtime needed)
-    libssl3 \
-    zlib1g \
-    libbz2-1.0 \
-    libreadline8 \
-    libsqlite3-0 \
-    libncursesw6 \
-    xz-utils \
-    libxml2 \
-    libxmlsec1 \
-    libffi8 \
-    liblzma5 && \
-    # Clean up apt cache
+      sudo \
+      curl \
+      ca-certificates \
+      git \
+      procps \
+      build-essential \
+      python3 \
+      python3-venv \
+      python3-pip \
+      python3-dev \
+      libssl3 \
+      zlib1g \
+      libbz2-1.0 \
+      libreadline8 \
+      libsqlite3-0 \
+      libncursesw6 \
+      xz-utils \
+      libxml2 \
+      libxmlsec1 \
+      libffi8 \
+      liblzma5 && \
     rm -rf /var/lib/apt/lists/*
 
-# Create group and user
 RUN groupadd -g ${GROUP_GID} ${UGNAME} && \
     useradd -m -u ${UID} -g ${UGNAME} -s /bin/bash ${UNAME} && \
-    echo "${UNAME}:${PASS}" | chpasswd && \
     usermod -aG sudo ${UNAME} && \
     echo "${UNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${UNAME} && \
     chmod 0440 /etc/sudoers.d/${UNAME}
 
-# Install Node.js in a single optimized layer
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/* && \
-    # Clean up Node.js installation artifacts
     npm cache clean --force
 
-# Create Python symlinks and install essential Python tools
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 && \
-    # Install pip tools
-    python -m pip install --no-cache-dir --break-system-packages --ignore-installed --upgrade pip && \
-    pip install --no-cache-dir --break-system-packages pipx virtualenv
+    python -m pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir pipx virtualenv
 
-# Verify installations
 RUN node -v && npm -v && python --version && pip --version && git --version
 
-# Create APP directory
 RUN mkdir -p /home/${UNAME}/APP && chown -R ${UNAME}:${UGNAME} /home/${UNAME}/APP
 
-# Switch to user and set working directory
 USER ${UNAME}
 WORKDIR /home/${UNAME}
 
-# Set Python environment variables
 ENV PATH="/home/${UNAME}/.local/bin:${PATH}" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Entry point
 CMD ["/bin/bash"]

@@ -1,64 +1,70 @@
 {
   "name": "AI Business Assistant - Antigravity Dev",
+
   // OPTION 1: Build from Dockerfile (default)
   "build": {
     "dockerfile": "../docker/Dockerfile.dev",
     "context": "..",
     "args": {
-      "UID": "20001",
+      // ✅ Alineado al usuario típico del host para evitar permisos raros en mounts
+      "UID": "1000",
+      "GROUP_GID": "1000",
+
+      // ✅ Tu usuario “real” dentro del contenedor
       "UNAME": "builduser",
-      "PASS": "dev24",
-      "GROUP_GID": "10001",
-      "UGNAME": "buildgroup"
+      "UGNAME": "buildgroup",
+
+      "PASS": "dev24"
     }
   },
-  // OPTION 2: Attach to existing container (comment out 'build' above and uncomment below)
-  // To use: 
-  // 1. Start container: docker run -d --name ai-business-assistant-dev -v "${PWD}:/home/builduser/APP" -p 8000:8000 -p 8888:8888 <your-image-name> sleep infinity
-  // 2. In VS Code: "Dev Containers: Attach to Running Container" and select "ai-business-assistant-dev"
+
+  // OPTION 2: Attach to existing container (leave for later)
   // "image": "ai-business-assistant:latest",
-  // Configure container user
+
+  // ✅ Fuerza el usuario de VS Code dentro del contenedor
   "remoteUser": "builduser",
   "containerUser": "builduser",
   "updateRemoteUserUID": false,
-  // Mount the workspace
+
+  // Workspace
   "workspaceFolder": "/home/builduser/APP",
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/builduser/APP,type=bind,consistency=cached",
-  // Features to install
+
+  // Features
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
+      // ✅ IMPORTANTÍSIMO: si no alineas esto, puedes terminar como "vscode"
+      "username": "builduser",
+      "userUid": "1000",
+      "userGid": "1000",
+
       "installZsh": true,
       "installOhMyZsh": true,
       "upgradePackages": true,
-      "username": "builduser"
+      "configureZshAsDefaultShell": false
     },
     "ghcr.io/devcontainers/features/git:1": {
       "version": "latest",
       "ppa": false
     }
   },
-  // VS Code customizations for Antigravity
+
+  // VS Code customizations
   "customizations": {
     "vscode": {
       "extensions": [
-        // Python support
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-python.debugpy",
-        // Jupyter notebooks
         "ms-toolsai.jupyter",
         "ms-toolsai.jupyter-keymap",
         "ms-toolsai.jupyter-renderers",
-        // Git and version control
         "eamodio.gitlens",
-        // Code formatting and linting
         "ms-python.black-formatter",
         "ms-python.flake8",
         "ms-python.isort",
-        // Markdown support
         "yzhang.markdown-all-in-one",
         "DavidAnson.vscode-markdownlint",
-        // General productivity
         "GitHub.copilot",
         "GitHub.copilot-chat",
         "usernamehw.errorlens",
@@ -66,7 +72,6 @@
         "PKief.material-icon-theme"
       ],
       "settings": {
-        // Python settings
         "python.defaultInterpreterPath": "/usr/bin/python3",
         "python.terminal.activateEnvironment": true,
         "python.linting.enabled": true,
@@ -79,37 +84,24 @@
             "source.organizeImports": "explicit"
           }
         },
-        // Jupyter settings
         "jupyter.askForKernelRestart": false,
-        "jupyter.widgetScriptSources": [
-          "jsdelivr.com",
-          "unpkg.com"
-        ],
-        // Editor settings
+        "jupyter.widgetScriptSources": ["jsdelivr.com", "unpkg.com"],
+
         "editor.formatOnSave": true,
-        "editor.rulers": [
-          88,
-          120
-        ],
+        "editor.rulers": [88, 120],
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
         "editor.wordWrap": "on",
         "editor.minimap.enabled": true,
         "editor.suggestSelection": "first",
         "editor.bracketPairColorization.enabled": true,
-        // Terminal settings
+
         "terminal.integrated.defaultProfile.linux": "bash",
         "terminal.integrated.profiles.linux": {
-          "bash": {
-            "path": "/bin/bash",
-            "icon": "terminal-bash"
-          },
-          "zsh": {
-            "path": "/bin/zsh",
-            "icon": "terminal"
-          }
+          "bash": { "path": "/bin/bash", "icon": "terminal-bash" },
+          "zsh": { "path": "/bin/zsh", "icon": "terminal" }
         },
-        // Files settings
+
         "files.exclude": {
           "**/__pycache__": true,
           "**/.pytest_cache": true,
@@ -122,11 +114,11 @@
           "**/node_modules/**": true,
           "**/__pycache__/**": true
         },
-        // Git settings
+
         "git.autofetch": true,
         "git.confirmSync": false,
         "git.enableSmartCommit": true,
-        // Markdown settings
+
         "[markdown]": {
           "editor.defaultFormatter": "yzhang.markdown-all-in-one",
           "editor.wordWrap": "on"
@@ -134,32 +126,31 @@
       }
     }
   },
-  // Port forwarding
-  "forwardPorts": [
-    8000, // Common Python web server port
-    8080, // Alternative web server port
-    8888, // Jupyter notebook default port
-    5000 // Flask default port
-  ],
-  // Post-create command to set up the environment
+
+  // Ports
+  "forwardPorts": [8000, 8080, 8888, 5000],
+
+  // Post-create
   "postCreateCommand": "bash -c 'pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
-  // Mount additional volumes if needed
+
+  // Mount extra files
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/builduser/.ssh,type=bind,consistency=cached,readonly",
     "source=${localEnv:HOME}/.gitconfig,target=/home/builduser/.gitconfig,type=bind,consistency=cached,readonly"
   ],
-  // Environment variables
+
   "remoteEnv": {
     "PYTHONUNBUFFERED": "1",
     "PYTHONDONTWRITEBYTECODE": "1"
   },
-  // Run arguments for the container
-  // Customize container name and hostname here ⬇️
+
+  // ✅ Refuerza ejecución con UID/GID 1000:1000 (por si Docker/Feature intenta otra cosa)
   "runArgs": [
     "--name=ai-business-assistant-dev",
-    "--hostname=ai-business-assistant"
+    "--hostname=ai-business-assistant",
+    "--user=1000:1000"
   ],
-  // Lifecycle scripts
+
   "initializeCommand": "echo 'Initializing devcontainer...'",
   "onCreateCommand": "echo 'Container created successfully!'",
   "updateContentCommand": "echo 'Updating container content...'",
