@@ -1,65 +1,15 @@
-FROM python:3.11-slim-bookworm
+FROM mcr.microsoft.com/devcontainers/python:3.11
 
-ENV DEBIAN_FRONTEND=noninteractive
+# Optional: install OS deps your project needs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    procps \
+    curl \
+    ca-certificates \
+    git \
+    build-essential \
+  && rm -rf /var/lib/apt/lists/*
 
-ARG UID=1000
-ARG UNAME=builduser
-ARG GROUP_GID=1000
-ARG UGNAME=buildgroup
+# If you want node pinned in Dockerfile (instead of feature), you can,
+# but in Dev Containers it's cleaner to use the node feature.
 
-# System packages (dev-friendly)
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      sudo \
-      curl \
-      ca-certificates \
-      gnupg \
-      git \
-      procps \
-      openssh-client \
-      build-essential \
-      pkg-config \
-      libssl-dev \
-      libffi-dev \
-      libxml2-dev \
-      libxmlsec1-dev \
-      zsh \
-      less && \
-    rm -rf /var/lib/apt/lists/*
-
-# User + sudo (passwordless for dev) - safer when group/user already exist
-RUN if ! getent group "${UGNAME}" >/dev/null; then groupadd -g "${GROUP_GID}" "${UGNAME}"; fi && \
-    if ! id -u "${UNAME}" >/dev/null 2>&1; then useradd -m -u "${UID}" -g "${UGNAME}" -s /bin/bash "${UNAME}"; fi && \
-    usermod -aG sudo "${UNAME}" && \
-    echo "${UNAME} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${UNAME}" && \
-    chmod 0440 "/etc/sudoers.d/${UNAME}"
-
-# Node.js 22
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends nodejs && \
-    rm -rf /var/lib/apt/lists/* && \
-    npm cache clean --force
-
-# Python tooling
-RUN python -m pip install --no-cache-dir --upgrade pip && \
-    python -m pip install --no-cache-dir pipx virtualenv && \
-    python -m pipx ensurepath
-
-# Workspace folder
-RUN mkdir -p /home/${UNAME}/APP && \
-    chown -R ${UNAME}:${UGNAME} /home/${UNAME}
-
-# Sanity check
-RUN node -v && npm -v && python --version && pip --version && git --version
-
-USER ${UNAME}
-WORKDIR /home/${UNAME}/APP
-
-ENV PATH="/home/${UNAME}/.local/bin:${PATH}" \
-    PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
-
-CMD ["/bin/bash"]
+WORKDIR /workspaces
