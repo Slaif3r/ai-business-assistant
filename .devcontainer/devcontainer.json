@@ -13,7 +13,6 @@
   },
 
   "remoteUser": "builduser",
-  "containerUser": "builduser",
   "updateRemoteUserUID": true,
 
   "workspaceFolder": "/home/builduser/APP",
@@ -57,11 +56,10 @@
         "PKief.material-icon-theme"
       ],
       "settings": {
-        "python.defaultInterpreterPath": "/usr/bin/python3",
+        "python.defaultInterpreterPath": "/home/builduser/APP/.venv/bin/python",
         "python.terminal.activateEnvironment": true,
-        "python.linting.enabled": true,
-        "python.linting.flake8Enabled": true,
-        "python.formatting.provider": "black",
+        "python.analysis.typeCheckingMode": "basic",
+
         "[python]": {
           "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.formatOnSave": true,
@@ -115,7 +113,7 @@
 
   "forwardPorts": [8000, 8080, 8888, 5000],
 
-  "postCreateCommand": "bash -c 'python -m pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
+  "postCreateCommand": "bash -lc 'python -m venv .venv && . .venv/bin/activate && python -m pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
 
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/builduser/.ssh,type=bind,consistency=cached,readonly",
@@ -124,10 +122,13 @@
 
   "remoteEnv": {
     "PYTHONUNBUFFERED": "1",
-    "PYTHONDONTWRITEBYTECODE": "1"
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PIP_DISABLE_PIP_VERSION_CHECK": "1",
+    "PIP_NO_CACHE_DIR": "1"
   },
 
   "runArgs": [
+    "--init",
     "--name=ai-business-assistant-dev",
     "--hostname=ai-business-assistant"
   ],
@@ -135,5 +136,5 @@
   "initializeCommand": "echo 'Initializing devcontainer...'",
   "onCreateCommand": "echo 'Container created successfully!'",
   "updateContentCommand": "echo 'Updating container content...'",
-  "postStartCommand": "git config --global --add safe.directory /home/builduser/APP"
+  "postStartCommand": "bash -lc 'git config --global --add safe.directory /home/builduser/APP || true'"
 }
