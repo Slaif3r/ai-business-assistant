@@ -1,37 +1,25 @@
 {
-  "name": "AI Business Assistant - Antigravity Dev",
+  "name": "AI Business Assistant (Codespaces)",
 
-  "build": {
-    "dockerfile": "../docker/Dockerfile.dev",
-    "context": "..",
-    "args": {
-      "UID": "1000",
-      "GROUP_GID": "1000",
-      "UNAME": "builduser",
-      "UGNAME": "buildgroup"
-    }
-  },
-
-  "remoteUser": "builduser",
-  "updateRemoteUserUID": true,
-
-  "workspaceFolder": "/home/builduser/APP",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/home/builduser/APP,type=bind,consistency=cached",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
 
   "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "username": "builduser",
-      "userUid": "1000",
-      "userGid": "1000",
-      "installZsh": true,
-      "installOhMyZsh": true,
-      "upgradePackages": true,
-      "configureZshAsDefaultShell": false
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
     },
-    "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest",
-      "ppa": false
-    }
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  "forwardPorts": [8000, 8080, 8888, 5000],
+
+  "postCreateCommand": "bash -lc 'python -m venv .venv && . .venv/bin/activate && python -m pip install -U pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
+
+  "remoteEnv": {
+    "PYTHONUNBUFFERED": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PIP_DISABLE_PIP_VERSION_CHECK": "1"
   },
 
   "customizations": {
@@ -56,7 +44,7 @@
         "PKief.material-icon-theme"
       ],
       "settings": {
-        "python.defaultInterpreterPath": "/home/builduser/APP/.venv/bin/python",
+        "python.defaultInterpreterPath": "/workspaces/${localWorkspaceFolderBasename}/.venv/bin/python",
         "python.terminal.activateEnvironment": true,
         "python.analysis.typeCheckingMode": "basic",
 
@@ -68,23 +56,13 @@
           }
         },
 
-        "jupyter.askForKernelRestart": false,
-        "jupyter.widgetScriptSources": ["jsdelivr.com", "unpkg.com"],
-
         "editor.formatOnSave": true,
         "editor.rulers": [88, 120],
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
         "editor.wordWrap": "on",
-        "editor.minimap.enabled": true,
-        "editor.suggestSelection": "first",
-        "editor.bracketPairColorization.enabled": true,
 
         "terminal.integrated.defaultProfile.linux": "bash",
-        "terminal.integrated.profiles.linux": {
-          "bash": { "path": "/bin/bash", "icon": "terminal-bash" },
-          "zsh": { "path": "/bin/zsh", "icon": "terminal" }
-        },
 
         "files.exclude": {
           "**/__pycache__": true,
@@ -99,42 +77,11 @@
           "**/__pycache__/**": true
         },
 
-        "git.autofetch": true,
-        "git.confirmSync": false,
-        "git.enableSmartCommit": true,
-
         "[markdown]": {
           "editor.defaultFormatter": "yzhang.markdown-all-in-one",
           "editor.wordWrap": "on"
         }
       }
     }
-  },
-
-  "forwardPorts": [8000, 8080, 8888, 5000],
-
-  "postCreateCommand": "bash -lc 'python -m venv .venv && . .venv/bin/activate && python -m pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
-
-  "mounts": [
-    "source=${localEnv:HOME}/.ssh,target=/home/builduser/.ssh,type=bind,consistency=cached,readonly",
-    "source=${localEnv:HOME}/.gitconfig,target=/home/builduser/.gitconfig,type=bind,consistency=cached,readonly"
-  ],
-
-  "remoteEnv": {
-    "PYTHONUNBUFFERED": "1",
-    "PYTHONDONTWRITEBYTECODE": "1",
-    "PIP_DISABLE_PIP_VERSION_CHECK": "1",
-    "PIP_NO_CACHE_DIR": "1"
-  },
-
-  "runArgs": [
-    "--init",
-    "--name=ai-business-assistant-dev",
-    "--hostname=ai-business-assistant"
-  ],
-
-  "initializeCommand": "echo 'Initializing devcontainer...'",
-  "onCreateCommand": "echo 'Container created successfully!'",
-  "updateContentCommand": "echo 'Updating container content...'",
-  "postStartCommand": "bash -lc 'git config --global --add safe.directory /home/builduser/APP || true'"
+  }
 }
