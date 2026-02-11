@@ -2,44 +2,37 @@ FROM python:3.11-slim-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ✅ Defaults align with common dev hosts (Linux/macOS)
 ARG UID=1000
 ARG UNAME=builduser
 ARG GROUP_GID=1000
 ARG UGNAME=buildgroup
 
-# System packages
+# System packages (dev-friendly)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       sudo \
       curl \
       ca-certificates \
+      gnupg \
       git \
       procps \
+      openssh-client \
       build-essential \
-      python3 \
-      python3-venv \
-      python3-pip \
-      python3-dev \
-      libssl3 \
-      zlib1g \
-      libbz2-1.0 \
-      libreadline8 \
-      libsqlite3-0 \
-      libncursesw6 \
-      xz-utils \
-      libxml2 \
-      libxmlsec1 \
-      libffi8 \
-      liblzma5 && \
+      pkg-config \
+      libssl-dev \
+      libffi-dev \
+      libxml2-dev \
+      libxmlsec1-dev \
+      zsh \
+      less && \
     rm -rf /var/lib/apt/lists/*
 
-# User + sudo (passwordless for dev)
-RUN groupadd -g ${GROUP_GID} ${UGNAME} && \
-    useradd -m -u ${UID} -g ${UGNAME} -s /bin/bash ${UNAME} && \
-    usermod -aG sudo ${UNAME} && \
-    echo "${UNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${UNAME} && \
-    chmod 0440 /etc/sudoers.d/${UNAME}
+# User + sudo (passwordless for dev) - safer when group/user already exist
+RUN if ! getent group "${UGNAME}" >/dev/null; then groupadd -g "${GROUP_GID}" "${UGNAME}"; fi && \
+    if ! id -u "${UNAME}" >/dev/null 2>&1; then useradd -m -u "${UID}" -g "${UGNAME}" -s /bin/bash "${UNAME}"; fi && \
+    usermod -aG sudo "${UNAME}" && \
+    echo "${UNAME} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${UNAME}" && \
+    chmod 0440 "/etc/sudoers.d/${UNAME}"
 
 # Node.js 22
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
@@ -48,18 +41,17 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     rm -rf /var/lib/apt/lists/* && \
     npm cache clean --force
 
-# Python tooling (pipx/virtualenv) + stable python/pip entrypoints
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
-    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 && \
-    python -m pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir pipx virtualenv
+# Python tooling
+RUN python -m pip install --no-cache-dir --upgrade pip && \
+    python -m pip install --no-cache-dir pipx virtualenv && \
+    python -m pipx ensurepath
+
+# Workspace folder
+RUN mkdir -p /home/${UNAME}/APP && \
+    chown -R ${UNAME}:${UGNAME} /home/${UNAME}
 
 # Sanity check
 RUN node -v && npm -v && python --version && pip --version && git --version
-
-# ✅ Workspace folder (the one you want)
-RUN mkdir -p /home/${UNAME}/APP && \
-    chown -R ${UNAME}:${UGNAME} /home/${UNAME}
 
 USER ${UNAME}
 WORKDIR /home/${UNAME}/APP
