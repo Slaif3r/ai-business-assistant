@@ -6,46 +6,40 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.dev
       args:
-        # ✅ Align UID/GID with most Linux/macOS dev hosts to avoid mount permission issues
         UID: "1000"
         GROUP_GID: "1000"
-
-        # ✅ Your intended user/group inside the container
         UNAME: "builduser"
         UGNAME: "buildgroup"
 
-    # Customize container name here ⬇️
     container_name: ${CONTAINER_NAME:-ai-business-assistant-dev}
-    # Customize hostname here ⬇️
     hostname: ${HOSTNAME:-ai-business-assistant}
 
-    # Keep container running
     command: sleep infinity
 
-    # Mount workspace + optional host credentials (readonly)
+    init: true
+    tty: true
+    stdin_open: true
+
     volumes:
       - ..:/home/builduser/APP:cached
       - ${HOME}/.ssh:/home/builduser/.ssh:ro
       - ${HOME}/.gitconfig:/home/builduser/.gitconfig:ro
 
-    # Port forwarding
     ports:
       - "8000:8000"
       - "8080:8080"
       - "8888:8888"
+      - "5000:5000"
 
-    # Environment variables
     environment:
       PYTHONUNBUFFERED: "1"
       PYTHONDONTWRITEBYTECODE: "1"
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      PIP_NO_CACHE_DIR: "1"
 
-    # ✅ Most reliable user mapping for bind mounts
     user: "1000:1000"
-
-    # Working directory
     working_dir: /home/builduser/APP
 
-    # Network configuration
     networks:
       - dev-network
 
