@@ -5,25 +5,14 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.dev
-      args:
-        UID: "1000"
-        GROUP_GID: "1000"
-        UNAME: "builduser"
-        UGNAME: "buildgroup"
 
     container_name: ${CONTAINER_NAME:-ai-business-assistant-dev}
     hostname: ${HOSTNAME:-ai-business-assistant}
 
     command: sleep infinity
 
-    init: true
-    tty: true
-    stdin_open: true
-
     volumes:
-      - ..:/home/builduser/APP:cached
-      - ${HOME}/.ssh:/home/builduser/.ssh:ro
-      - ${HOME}/.gitconfig:/home/builduser/.gitconfig:ro
+      - ..:/workspaces/AI-buss-Assistant:cached
 
     ports:
       - "8000:8000"
@@ -34,11 +23,8 @@ services:
     environment:
       PYTHONUNBUFFERED: "1"
       PYTHONDONTWRITEBYTECODE: "1"
-      PIP_DISABLE_PIP_VERSION_CHECK: "1"
-      PIP_NO_CACHE_DIR: "1"
 
-    user: "1000:1000"
-    working_dir: /home/builduser/APP
+    working_dir: /workspaces/AI-buss-Assistant
 
     networks:
       - dev-network
