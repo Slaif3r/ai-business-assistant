@@ -1,15 +1,29 @@
-FROM mcr.microsoft.com/devcontainers/python:3.11
+FROM mcr.microsoft.com/devcontainers/python:1-3.11-bookworm
 
-# Optional: install OS deps your project needs
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    procps \
-    curl \
-    ca-certificates \
-    git \
-    build-essential \
-  && rm -rf /var/lib/apt/lists/*
+ENV DEBIAN_FRONTEND=noninteractive
 
-# If you want node pinned in Dockerfile (instead of feature), you can,
-# but in Dev Containers it's cleaner to use the node feature.
+# Install only what you actually need on top of the devcontainers base
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      procps \
+      curl \
+      ca-certificates \
+      build-essential \
+      libssl3 \
+      zlib1g \
+      libbz2-1.0 \
+      libreadline8 \
+      libsqlite3-0 \
+      libncursesw6 \
+      xz-utils \
+      libxml2 \
+      libxmlsec1 \
+      libffi8 \
+      liblzma5 && \
+    rm -rf /var/lib/apt/lists/*
 
-WORKDIR /workspaces
+# Keep image friendly for pip installs
+ENV PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
