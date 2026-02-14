@@ -1,17 +1,17 @@
 {
   "name": "AI Business Assistant",
 
-  "build": {
-    "dockerfile": "../docker/Dockerfile.dev",
-    "context": ".."
-  },
-
-  "remoteUser": "vscode",
-
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11-bookworm",
 
   "features": {
-    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "22"
     },
@@ -54,7 +54,10 @@
         },
 
         "jupyter.askForKernelRestart": false,
-        "jupyter.widgetScriptSources": ["jsdelivr.com", "unpkg.com"],
+        "jupyter.widgetScriptSources": [
+          "jsdelivr.com",
+          "unpkg.com"
+        ],
 
         "editor.formatOnSave": true,
         "editor.rulers": [88, 120],
@@ -62,7 +65,6 @@
         "editor.insertSpaces": true,
         "editor.wordWrap": "on",
         "editor.minimap.enabled": true,
-        "editor.suggestSelection": "first",
         "editor.bracketPairColorization.enabled": true,
 
         "terminal.integrated.defaultProfile.linux": "bash",
@@ -94,12 +96,10 @@
 
   "forwardPorts": [8000, 8080, 8888, 5000],
 
-  "postCreateCommand": "bash -lc 'python -m pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
+  "postCreateCommand": "bash -lc 'sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential wget curl ca-certificates procps && python -m pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
 
   "remoteEnv": {
     "PYTHONUNBUFFERED": "1",
     "PYTHONDONTWRITEBYTECODE": "1"
-  },
-
-  "postStartCommand": "git config --global --add safe.directory /workspaces/${localWorkspaceFolderBasename}"
+  }
 }
