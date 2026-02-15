@@ -11,53 +11,53 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
-        args: ['--maxkb=1000']
+        args: ["--maxkb=1000"]
       - id: check-json
       - id: check-toml
       - id: check-merge-conflict
       - id: detect-private-key
       - id: mixed-line-ending
 
-  # Python code formatting with Black
+  # Python formatting (Black)
   - repo: https://github.com/psf/black
     rev: 24.1.1
     hooks:
       - id: black
         language_version: python3.11
 
-  # Import sorting with isort
+  # Import sorting (isort)
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
         args: ["--profile", "black"]
 
-  # Linting with flake8
+  # Linting (flake8)
   - repo: https://github.com/pycqa/flake8
     rev: 7.0.0
     hooks:
       - id: flake8
-        args: ['--max-line-length=88', '--extend-ignore=E203,W503']
+        args: ["--max-line-length=88", "--extend-ignore=E203,W503"]
 
-  # Type checking with mypy
+  # Type checking (mypy)
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.8.0
     hooks:
       - id: mypy
-        additional_dependencies: [types-all]
-        args: [--ignore-missing-imports]
+        additional_dependencies: ["types-all"]
+        args: ["--ignore-missing-imports"]
 
-  # Security checks
+  # Security checks (bandit)
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.6
     hooks:
       - id: bandit
-        args: ['-c', 'pyproject.toml']
-        additional_dependencies: ['bandit[toml]']
+        args: ["-c", "pyproject.toml"]
+        additional_dependencies: ["bandit[toml]"]
 
-  # Dockerfile linting
-  - repo: https://github.com/hadolint/hadolint
+  # Dockerfile linting (hadolint) - more reliable pre-commit repo
+  - repo: https://github.com/hadolint/hadolint-pre-commit
     rev: v2.12.0
     hooks:
-      - id: hadolint-docker
-        args: ['--ignore', 'DL3008', '--ignore', 'DL3015']
+      - id: hadolint
+        args: ["--ignore", "DL3008", "--ignore", "DL3015"]
