@@ -1,5 +1,5 @@
 {
-  "name": "AI Business Assistant",
+  "name": "ai-business-assistant",
 
   "build": {
     "dockerfile": "../docker/Dockerfile.dev",
@@ -7,21 +7,16 @@
   },
 
   "remoteUser": "vscode",
-  "containerUser": "vscode",
-
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/workspaces/ai-business-assistant",
 
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      "username": "vscode",
       "installZsh": true,
       "installOhMyZsh": true,
-      "upgradePackages": true,
-      "configureZshAsDefaultShell": false
+      "upgradePackages": true
     },
     "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest",
-      "ppa": false
+      "version": "latest"
     },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "22"
@@ -42,8 +37,8 @@
         "ms-toolsai.jupyter-renderers",
         "eamodio.gitlens",
         "ms-python.black-formatter",
-        "ms-python.flake8",
         "ms-python.isort",
+        "ms-python.flake8",
         "yzhang.markdown-all-in-one",
         "DavidAnson.vscode-markdownlint",
         "GitHub.copilot",
@@ -77,10 +72,6 @@
         "editor.bracketPairColorization.enabled": true,
 
         "terminal.integrated.defaultProfile.linux": "bash",
-        "terminal.integrated.profiles.linux": {
-          "bash": { "path": "/bin/bash", "icon": "terminal-bash" },
-          "zsh": { "path": "/bin/zsh", "icon": "terminal" }
-        },
 
         "files.exclude": {
           "**/__pycache__": true,
@@ -111,12 +102,10 @@
 
   "remoteEnv": {
     "PYTHONUNBUFFERED": "1",
-    "PYTHONDONTWRITEBYTECODE": "1",
-    "PIP_DISABLE_PIP_VERSION_CHECK": "1",
-    "PIP_NO_CACHE_DIR": "1"
+    "PYTHONDONTWRITEBYTECODE": "1"
   },
 
-  "postCreateCommand": "bash -lc 'python -m pip install -U pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
+  "postCreateCommand": "bash -lc 'python -m pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
 
-  "postStartCommand": "bash -lc 'git config --global --add safe.directory ${containerWorkspaceFolder} || true'"
+  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"
 }
