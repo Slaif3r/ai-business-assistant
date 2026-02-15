@@ -1,16 +1,27 @@
 {
   "name": "AI Business Assistant",
 
-  "image": "mcr.microsoft.com/devcontainers/python:3.11-bookworm",
+  "build": {
+    "dockerfile": "../docker/Dockerfile.dev",
+    "context": ".."
+  },
+
+  "remoteUser": "vscode",
+  "containerUser": "vscode",
+
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
+      "username": "vscode",
       "installZsh": true,
       "installOhMyZsh": true,
-      "upgradePackages": true
+      "upgradePackages": true,
+      "configureZshAsDefaultShell": false
     },
     "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest"
+      "version": "latest",
+      "ppa": false
     },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "22"
@@ -54,10 +65,7 @@
         },
 
         "jupyter.askForKernelRestart": false,
-        "jupyter.widgetScriptSources": [
-          "jsdelivr.com",
-          "unpkg.com"
-        ],
+        "jupyter.widgetScriptSources": ["jsdelivr.com", "unpkg.com"],
 
         "editor.formatOnSave": true,
         "editor.rulers": [88, 120],
@@ -65,9 +73,14 @@
         "editor.insertSpaces": true,
         "editor.wordWrap": "on",
         "editor.minimap.enabled": true,
+        "editor.suggestSelection": "first",
         "editor.bracketPairColorization.enabled": true,
 
         "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": { "path": "/bin/bash", "icon": "terminal-bash" },
+          "zsh": { "path": "/bin/zsh", "icon": "terminal" }
+        },
 
         "files.exclude": {
           "**/__pycache__": true,
@@ -96,10 +109,14 @@
 
   "forwardPorts": [8000, 8080, 8888, 5000],
 
-  "postCreateCommand": "bash -lc 'sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential wget curl ca-certificates procps && python -m pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
-
   "remoteEnv": {
     "PYTHONUNBUFFERED": "1",
-    "PYTHONDONTWRITEBYTECODE": "1"
-  }
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PIP_DISABLE_PIP_VERSION_CHECK": "1",
+    "PIP_NO_CACHE_DIR": "1"
+  },
+
+  "postCreateCommand": "bash -lc 'python -m pip install -U pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi'",
+
+  "postStartCommand": "bash -lc 'git config --global --add safe.directory ${containerWorkspaceFolder} || true'"
 }
