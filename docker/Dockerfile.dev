@@ -1,28 +1,25 @@
-# Debian 12 (bookworm) + vscode user pre-created (Codespaces standard), multi-arch
 FROM mcr.microsoft.com/devcontainers/python:1-3.11-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Minimal packages that commonly avoid remote tooling breakage (wget matters for your Antigravity server install flow)
+
+RUN rm -f /etc/apt/sources.list.d/yarn.list \
+          /etc/apt/sources.list.d/yarn*.list \
+          /etc/apt/sources.list.d/*yarn* || true
+
+# Minimal packages that commonly prevent remote tooling breakage
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     procps \
     build-essential \
-    libssl3 \
-    zlib1g \
-    libbz2-1.0 \
-    libreadline8 \
-    libsqlite3-0 \
-    libncursesw6 \
-    xz-utils \
-    libxml2 \
-    libxmlsec1 \
-    libffi8 \
-    liblzma5 \
-  && rm -rf /var/lib/apt/lists/*
+    ca-certificates \
+    curl \
+    git \
+    openssh-client \
+    && rm -rf /var/lib/apt/lists/*
 
-# Keep pip current (your postCreate installs project deps)
-RUN python -m pip install --no-cache-dir -U pip
+# Workspace (Codespaces standard)
+WORKDIR /workspaces/ai-business-assistant
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
