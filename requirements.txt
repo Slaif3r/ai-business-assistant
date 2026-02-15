@@ -1,0 +1,56 @@
+# =============================================================================
+# Core Dependencies
+# =============================================================================
+# These are the exact versions that are known to work together
+# Generated from: pip freeze (after testing)
+# Last updated: 2026-01-29
+
+# Core libraries
+numpy==1.26.3
+pandas==2.1.4
+python-dotenv==1.0.1
+
+# =============================================================================
+# Development Dependencies
+# =============================================================================
+# Install with: pip install -r requirements-dev.txt
+
+# Testing
+pytest==7.4.4
+pytest-cov==4.1.0
+
+# Code formatting and linting
+black==24.1.1
+flake8==7.0.0
+isort==5.13.2
+mypy==1.8.0
+
+# Pre-commit hooks
+pre-commit==3.6.0
+
+# =============================================================================
+# Machine Learning (Optional)
+# =============================================================================
+# Install with: pip install -r requirements-ml.txt
+
+# scikit-learn==1.4.0
+# torch==2.1.2
+# transformers==4.37.0
+
+# =============================================================================
+# Data Visualization (Optional)
+# =============================================================================
+# Install with: pip install -r requirements-viz.txt
+
+# matplotlib==3.8.2
+# seaborn==0.13.1
+# plotly==5.18.0
+
+# =============================================================================
+# Jupyter Notebook (Optional)
+# =============================================================================
+# Install with: pip install -r requirements-notebook.txt
+
+# jupyter==1.0.0
+# ipykernel==6.29.0
+# ipywidgets==8.1.1
