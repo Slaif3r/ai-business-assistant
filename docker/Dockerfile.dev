@@ -1,29 +1,30 @@
+# Debian 12 (bookworm) + vscode user pre-created (Codespaces standard), multi-arch
 FROM mcr.microsoft.com/devcontainers/python:1-3.11-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install only what you actually need on top of the devcontainers base
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      procps \
-      curl \
-      ca-certificates \
-      build-essential \
-      libssl3 \
-      zlib1g \
-      libbz2-1.0 \
-      libreadline8 \
-      libsqlite3-0 \
-      libncursesw6 \
-      xz-utils \
-      libxml2 \
-      libxmlsec1 \
-      libffi8 \
-      liblzma5 && \
-    rm -rf /var/lib/apt/lists/*
+# Minimal packages that commonly avoid remote tooling breakage (wget matters for your Antigravity server install flow)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    procps \
+    build-essential \
+    libssl3 \
+    zlib1g \
+    libbz2-1.0 \
+    libreadline8 \
+    libsqlite3-0 \
+    libncursesw6 \
+    xz-utils \
+    libxml2 \
+    libxmlsec1 \
+    libffi8 \
+    liblzma5 \
+  && rm -rf /var/lib/apt/lists/*
 
-# Keep image friendly for pip installs
-ENV PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+# Keep pip current (your postCreate installs project deps)
+RUN python -m pip install --no-cache-dir -U pip
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
