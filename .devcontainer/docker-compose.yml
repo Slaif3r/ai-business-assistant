@@ -3,29 +3,16 @@ version: "3.8"
 services:
   ai-business-assistant:
     build:
-      context: ..
+      context: .
       dockerfile: docker/Dockerfile.dev
 
-    container_name: ${CONTAINER_NAME:-ai-business-assistant-dev}
-    hostname: ${HOSTNAME:-ai-business-assistant}
+    container_name: ai-business-assistant-dev
+    hostname: ai-business-assistant
 
     command: sleep infinity
 
-    working_dir: /workspaces/ai-business-assistant
-
     volumes:
-      # Workspace (recommended path style for devcontainers/Codespaces parity)
-      - ..:/workspaces/ai-business-assistant:cached
-
-      # Optional: host credentials (safe readonly)
-      - ${HOME}/.ssh:/home/vscode/.ssh:ro
-      - ${HOME}/.gitconfig:/home/vscode/.gitconfig:ro
-
-    environment:
-      PYTHONUNBUFFERED: "1"
-      PYTHONDONTWRITEBYTECODE: "1"
-      PIP_DISABLE_PIP_VERSION_CHECK: "1"
-      PIP_NO_CACHE_DIR: "1"
+      - .:/workspaces/ai-business-assistant:cached
 
     ports:
       - "8000:8000"
@@ -33,9 +20,6 @@ services:
       - "8888:8888"
       - "5000:5000"
 
-    networks:
-      - dev-network
-
-networks:
-  dev-network:
-    driver: bridge
+    environment:
+      PYTHONUNBUFFERED: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
