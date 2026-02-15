@@ -11,20 +11,27 @@ services:
 
     command: sleep infinity
 
+    working_dir: /workspaces/ai-business-assistant
+
     volumes:
-      - ..:/workspaces/AI-buss-Assistant:cached
+      # Workspace (recommended path style for devcontainers/Codespaces parity)
+      - ..:/workspaces/ai-business-assistant:cached
+
+      # Optional: host credentials (safe readonly)
+      - ${HOME}/.ssh:/home/vscode/.ssh:ro
+      - ${HOME}/.gitconfig:/home/vscode/.gitconfig:ro
+
+    environment:
+      PYTHONUNBUFFERED: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      PIP_NO_CACHE_DIR: "1"
 
     ports:
       - "8000:8000"
       - "8080:8080"
       - "8888:8888"
       - "5000:5000"
-
-    environment:
-      PYTHONUNBUFFERED: "1"
-      PYTHONDONTWRITEBYTECODE: "1"
-
-    working_dir: /workspaces/AI-buss-Assistant
 
     networks:
       - dev-network
