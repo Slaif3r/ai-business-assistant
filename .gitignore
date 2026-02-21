@@ -21,6 +21,10 @@ htmlcov/
 venv/
 env/
 ENV/
+.venv/
 
 # Jupyter Notebooks
 .ipynb_checkpoints/
+
+#docker stuff
+.DS_Store

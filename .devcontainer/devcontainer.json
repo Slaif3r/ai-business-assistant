@@ -93,9 +93,19 @@
     }
   },
   "forwardPorts": [
-    8501,
+    8550,
     8888
   ],
+  "portsAttributes": {
+    "8550": {
+      "label": "Flet Web UI",
+      "onAutoForward": "openPreview"
+    },
+    "8888": {
+      "label": "Jupyter",
+      "onAutoForward": "notify"
+    }
+  },
   "remoteEnv": {
     "PYTHONUNBUFFERED": "1",
     "PYTHONDONTWRITEBYTECODE": "1"
