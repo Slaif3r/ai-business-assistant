@@ -5,19 +5,24 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ai-business-assistant"
 version = "0.1.0"
-description = "AI-powered business assistant for automation and insights"
+description = "AI-powered sales forecasting for multi-location retail businesses"  # ← More specific
 readme = "README.md"
-requires-python = ">=3.11,<3.12"
+requires-python = ">=3.11,<3.13"  # ← Allow 3.12 (flexible for future)
 license = {text = "MIT"}
 authors = [
     {name = "Aristides A. Morcillo", email = "aristides03_30@hotmail.com"}
 ]
+keywords = ["ai", "forecasting", "sales", "retail", "business-intelligence"]  # ← NEW: Help with discoverability
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",  # ← NEW: SMB owners
+    "Topic :: Office/Business",  # ← NEW: Business application
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",  # ← NEW: AI category
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",  # ← NEW: Future-ready
 ]
 
 # Core dependencies with version constraints
@@ -26,9 +31,11 @@ dependencies = [
     "pandas>=2.0.0,<3.0.0",
     "polars>=0.20.0,<1.0.0",
     "python-dotenv>=1.0.0,<2.0.0",
-
-    # UI framework
     "flet>=0.21.0,<1.0.0",
+    
+    # NEW: Add these for Day 4+ functionality
+    "scikit-learn>=1.3.0,<2.0.0",  # ← Move from [ml] to core (needed for forecasting)
+    "openpyxl>=3.1.0,<4.0.0",  # ← NEW: Excel file support (FreshMart uses Excel)
 ]
 
 [project.optional-dependencies]
@@ -37,17 +44,17 @@ dev = [
     "pytest>=7.4.0,<8.0.0",
     "pytest-cov>=4.1.0,<5.0.0",
     "black>=23.0.0,<25.0.0",
-    "flake8>=6.0.0,<8.0.0",
-    "isort>=5.12.0,<6.0.0",
+    "ruff>=0.1.0,<1.0.0",  # ← NEW: Faster than flake8+isort combined
     "mypy>=1.5.0,<2.0.0",
     "pre-commit>=3.3.0,<4.0.0",
+    "pandas-stubs>=2.0.0,<3.0.0",  # ← NEW: Type hints for pandas
 ]
 
-# Machine Learning dependencies
-ml = [
-    "scikit-learn>=1.3.0,<2.0.0",
+# Advanced Machine Learning (optional, not core)
+ml-advanced = [  # ← Renamed from "ml" to avoid confusion
     "torch>=2.0.0,<3.0.0",
     "transformers>=4.30.0,<5.0.0",
+    "prophet>=1.1.0,<2.0.0",  # ← NEW: Facebook's time series tool (better than ARIMA)
 ]
 
 # Data visualization
@@ -64,21 +71,65 @@ notebook = [
     "ipywidgets>=8.0.0,<9.0.0",
 ]
 
-# All optional dependencies
-all = [
-    "ai-business-assistant[dev,ml,viz,notebook]",
+# Production deployment
+prod = [  # ← NEW: Production-specific tools
+    "gunicorn>=21.0.0,<22.0.0",  # For API deployment
+    "sentry-sdk>=1.30.0,<2.0.0",  # Error tracking
 ]
 
+# All optional dependencies
+all = [
+    "ai-business-assistant[dev,ml-advanced,viz,notebook,prod]",
+]
+
+[project.scripts]
+# ← NEW: Command-line entry points
+ai-assistant = "ai_business_assistant.ui.app:run"
+ai-assistant-train = "ai_business_assistant.ml.trainer:main"  # Future Day 4
+
 [project.urls]
-Homepage = "https://github.com/yourusername/ai-business-assistant"
-Repository = "https://github.com/yourusername/ai-business-assistant"
-Documentation = "https://github.com/yourusername/ai-business-assistant/docs"
+Homepage = "https://github.com/aristides-morcillo/ai-business-assistant"  # ← Update with real username
+Repository = "https://github.com/aristides-morcillo/ai-business-assistant"
+Documentation = "https://github.com/aristides-morcillo/ai-business-assistant/tree/main/docs"
+"Bug Tracker" = "https://github.com/aristides-morcillo/ai-business-assistant/issues"  # ← NEW
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["ai_business_assistant*", "data*"]  # ← NEW: Explicit package discovery
+namespaces = false
+
+# Ruff configuration (replaces flake8 + isort)
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+]
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # Allow unused imports in __init__.py
 
 # Black configuration
 [tool.black]
@@ -99,16 +150,6 @@ extend-exclude = '''
 )/
 '''
 
-# isort configuration
-[tool.isort]
-profile = "black"
-line_length = 88
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
-
 # pytest configuration
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -120,6 +161,13 @@ addopts = [
     "--cov=src",
     "--cov-report=term-missing",
     "--cov-report=html",
+    "--cov-report=xml",  # ← NEW: For CI/CD integration
+    "--strict-markers",  # ← NEW: Catch typos in test markers
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
 ]
 
 # mypy configuration
@@ -137,6 +185,13 @@ warn_no_return = true
 follow_imports = "normal"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = [
+    "flet.*",
+    "polars.*",
+]
+ignore_missing_imports = true
+
 # Coverage configuration
 [tool.coverage.run]
 source = ["src"]
@@ -144,7 +199,9 @@ omit = [
     "*/tests/*",
     "*/test_*.py",
     "*/__pycache__/*",
+    "*/migrations/*",  # ← NEW: If you add database migrations later
 ]
+branch = true  # ← NEW: Branch coverage (more thorough)
 
 [tool.coverage.report]
 exclude_lines = [
@@ -154,4 +211,8 @@ exclude_lines = [
     "raise NotImplementedError",
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
+    "@abstractmethod",  # ← NEW
 ]
+precision = 2
+show_missing = true
+skip_covered = false

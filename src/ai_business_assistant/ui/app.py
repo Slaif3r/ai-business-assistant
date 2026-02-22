@@ -1,46 +1,48 @@
-from dataclasses import field
+"""
+AI Business Assistant - Main UI Application
+Flet-based cross-platform interface
+Author: Aristides A. Morcillo
+"""
 
 import flet as ft
+from ai_business_assistant.ui.theme import AppTheme
+from ai_business_assistant.ui.screens.upload_screen import UploadScreen
 
-
-def main(page: ft.Page):
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.spacing = 30
-
-    def animate(e: ft.Event[ft.Button]):
-        container.scale = 2 if container.scale == 1 else 1
-        page.update()
-
-    page.add(
-        container := ft.Container(
-            width=100,
-            height=100,
-            bgcolor=ft.Colors.LIGHT_BLUE,
-            border_radius=5,
-            scale=1,
-            animate_scale=ft.Animation(
-                duration=600,
-                curve=ft.AnimationCurve.BOUNCE_OUT,
-            ),
-        ),
-        ft.Button("Animate!", on_click=animate),
-    )
 
 def run():
-    # simplest local run; for Codespaces you’ll likely use CLI flags (--web, --port)
+    """
+    Main application entry point.
+    Called from src/main.py
+    """
+    def main(page: ft.Page):
+        # Configure page with theme
+        AppTheme.configure_page(page)
+        
+        # Set window properties
+        page.window_width = 1200
+        page.window_height = 800
+        page.window_resizable = True
+        page.window_min_width = 800
+        page.window_min_height = 600
+        
+        # Add app metadata
+        page.title = "AI Business Assistant"
+        page.window_title_bar_hidden = False
+        page.window_title_bar_buttons_hidden = False
+        
+        # Load upload screen
+        upload_screen = UploadScreen(page)
+        
+        # Add to page
+        page.add(upload_screen)
+        
+        # Update page
+        page.update()
+    
+    # Run as desktop app
     ft.app(target=main)
 
+
 if __name__ == "__main__":
+    # Allow running directly for testing
     run()
-
-#def main(page: ft.Page):
-#    page.title = "AI Business Assistant"
-#    page.add(ft.Text(" Iniciando una gran Historia... 👋"))
-
-#def run():
-    # simplest local run; for Codespaces you’ll likely use CLI flags (--web, --port)
-#    ft.app(target=main)
-
-#if __name__ == "__main__":
-#    run()

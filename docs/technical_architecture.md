@@ -10,7 +10,7 @@
 - Python
 - Pandas / NumPy
 - Scikit-learn
-- Streamlit
+- Flet
 
 ## Future Improvements
 - Model versioning
