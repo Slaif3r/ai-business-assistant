@@ -1,0 +1,11 @@
+date,product,quantity,revenue,store
+2024-01-01,Milk,45,179.55,Store 1
+2024-01-01,Strawberries,12,71.88,Store 1
+2024-01-02,Milk,38,151.62,Store 1
+2024-01-02,Strawberries,8,47.92,Store 1
+2024-01-03,Milk,52,207.48,Store 1
+2024-01-03,Bread,25,62.50,Store 1
+2024-01-04,Milk,41,163.59,Store 1
+2024-01-04,Strawberries,15,89.85,Store 1
+2024-01-05,Milk,48,191.52,Store 1
+2024-01-05,Bread,30,75.00,Store 1

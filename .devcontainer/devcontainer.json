@@ -1,14 +1,11 @@
 {
   "name": "ai-business-assistant",
-
   "build": {
     "dockerfile": "../docker/Dockerfile.dev",
     "context": ".."
   },
-
   "remoteUser": "vscode",
   "workspaceFolder": "/workspaces/ai-business-assistant",
-
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": true,
@@ -25,7 +22,6 @@
       "version": "latest"
     }
   },
-
   "customizations": {
     "vscode": {
       "extensions": [
@@ -50,7 +46,6 @@
       "settings": {
         "python.defaultInterpreterPath": "/usr/local/bin/python",
         "python.terminal.activateEnvironment": true,
-
         "[python]": {
           "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.formatOnSave": true,
@@ -58,21 +53,23 @@
             "source.organizeImports": "explicit"
           }
         },
-
         "jupyter.askForKernelRestart": false,
-        "jupyter.widgetScriptSources": ["jsdelivr.com", "unpkg.com"],
-
+        "jupyter.widgetScriptSources": [
+          "jsdelivr.com",
+          "unpkg.com"
+        ],
         "editor.formatOnSave": true,
-        "editor.rulers": [88, 120],
+        "editor.rulers": [
+          88,
+          120
+        ],
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
         "editor.wordWrap": "on",
         "editor.minimap.enabled": true,
         "editor.suggestSelection": "first",
         "editor.bracketPairColorization.enabled": true,
-
         "terminal.integrated.defaultProfile.linux": "bash",
-
         "files.exclude": {
           "**/__pycache__": true,
           "**/.pytest_cache": true,
@@ -85,11 +82,9 @@
           "**/node_modules/**": true,
           "**/__pycache__/**": true
         },
-
         "git.autofetch": true,
         "git.confirmSync": false,
         "git.enableSmartCommit": true,
-
         "[markdown]": {
           "editor.defaultFormatter": "yzhang.markdown-all-in-one",
           "editor.wordWrap": "on"
@@ -97,15 +92,24 @@
       }
     }
   },
-
-  "forwardPorts": [8000, 8080, 8888, 5000],
-
+  "forwardPorts": [
+    8550,
+    8888
+  ],
+  "portsAttributes": {
+    "8550": {
+      "label": "Flet Web UI",
+      "onAutoForward": "openPreview"
+    },
+    "8888": {
+      "label": "Jupyter",
+      "onAutoForward": "notify"
+    }
+  },
   "remoteEnv": {
     "PYTHONUNBUFFERED": "1",
     "PYTHONDONTWRITEBYTECODE": "1"
   },
-
   "postCreateCommand": "bash -lc 'set -e; python -m pip install --upgrade pip; if [ -f requirements.txt ]; then pip install -r requirements.txt; fi; if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi; if command -v pre-commit >/dev/null 2>&1 && [ -f .pre-commit-config.yaml ]; then pre-commit install; pre-commit run --all-files || true; fi'",
-
   "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"
 }
