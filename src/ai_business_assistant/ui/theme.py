@@ -1,8 +1,8 @@
 """
 UI Theme and Design System
 Purpose: Consistent colors, typography, spacing across all screens
-Author: Aristides A. Morcillo
-
+Author: [Your Name]
+Date: Day 3
 """
 
 import flet as ft
@@ -11,7 +11,7 @@ import flet as ft
 class AppTheme:
     """
     Design system for AI Business Assistant.
-    purple gradient theme.
+    Inspired by pitch deck purple gradient theme.
     """
     
     # Color Palette (matching pitch deck)
@@ -47,8 +47,6 @@ class AppTheme:
     def get_gradient():
         """Get brand gradient for headers"""
         return ft.LinearGradient(
-            begin=ft.alignment.top_left,
-            end=ft.alignment.bottom_right,
             colors=[AppTheme.PRIMARY, AppTheme.SECONDARY]
         )
     
@@ -57,11 +55,4 @@ class AppTheme:
         """Configure page with consistent theme"""
         page.title = "AI Business Assistant"
         page.padding = 0
-        page.theme_mode = ft.ThemeMode.LIGHT
         page.bgcolor = AppTheme.BACKGROUND
-        
-        # Custom theme
-        page.theme = ft.Theme(
-            color_scheme_seed=AppTheme.PRIMARY,
-            use_material3=True
-        )

@@ -1,7 +1,8 @@
 """
 AI Business Assistant - Main UI Application
 Flet-based cross-platform interface
-Author: Aristides A. Morcillo
+Author: [Your Name]
+Date: Day 3
 """
 
 import flet as ft
@@ -25,21 +26,16 @@ def run():
         page.window_min_width = 800
         page.window_min_height = 600
         
-        # Add app metadata
-        page.title = "AI Business Assistant"
-        page.window_title_bar_hidden = False
-        page.window_title_bar_buttons_hidden = False
-        
-        # Load upload screen
+        # Create upload screen
         upload_screen = UploadScreen(page)
         
-        # Add to page
-        page.add(upload_screen)
+        # Add the UI controls to page
+        page.add(upload_screen.build())
         
         # Update page
         page.update()
     
-    # Run as desktop app
+    # ✅ BEST: Run as native desktop app (no port conflicts!)
     ft.app(target=main)
 
 
